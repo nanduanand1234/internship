@@ -1,0 +1,67 @@
+import datetime
+
+class Expense:
+    def _init_(self, amount, category, date=None):
+        self.amount = amount
+        self.category = category
+        self.date = date if date else datetime.date.today()
+
+class ExpenseTracker:
+    def _init_(self):
+        self.expenses = []
+
+    def add_expense(self, expense):
+        self.expenses.append(expense)
+
+    def get_total_spent(self):
+        return sum(expense.amount for expense in self.expenses)
+
+    def get_expenses_by_category(self, category):
+        return [expense for expense in self.expenses if expense.category == category]
+
+    def get_spending_pattern(self):
+        pattern = {}
+        for expense in self.expenses:
+            month_year = (expense.date.month, expense.date.year)
+            if month_year in pattern:
+                pattern[month_year] += expense.amount
+            else:
+                pattern[month_year] = expense.amount
+        return pattern
+
+def main():
+    expense_tracker = ExpenseTracker()
+
+    while True:
+        print("\nCommands:")
+        print("1. Add Expense")
+        print("2. View Total Spent")
+        print("3. View Expenses by Category")
+        print("4. View Spending Pattern")
+        print("5. Exit")
+
+        choice = input("Enter your choice: ")
+
+        if choice == "1":
+            amount = float(input("Enter expense amount: "))
+            category = input("Enter expense category: ")
+            expense_tracker.add_expense(Expense(amount, category))
+        elif choice == "2":
+            print(f"Total spent: {expense_tracker.get_total_spent()}")
+        elif choice == "3":
+            category = input("Enter category to view expenses: ")
+            expenses = expense_tracker.get_expenses_by_category(category)
+            for expense in expenses:
+                print(f"Amount: {expense.amount}, Date: {expense.date}")
+        elif choice == "4":
+            pattern = expense_tracker.get_spending_pattern()
+            for month_year, amount in pattern.items():
+                print(f"{datetime.date(month=month_year[0], year=month_year[1]).strftime('%B %Y')}: {amount}")
+        elif choice == "5":
+            print("Exiting...")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+if _name_ == "_main_":
+    main()
